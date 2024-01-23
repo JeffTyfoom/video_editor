@@ -40,9 +40,6 @@ class VideoEditorController extends ChangeNotifier {
   /// Video from [File].
   final File file;
 
-  /// Video Player Options
-  VideoPlayerOptions? videoPlayerOptions;
-
   /// Constructs a [VideoEditorController] that edits a video from a file.
   ///
   /// The [file] argument must not be null.
@@ -55,11 +52,12 @@ class VideoEditorController extends ChangeNotifier {
     this.coverStyle = const CoverSelectionStyle(),
     this.cropStyle = const CropGridStyle(),
     TrimSliderStyle? trimStyle,
+    VideoPlayerOptions? videoPlayerOptions  
   })  : _video = VideoPlayerController.file(File(
           // https://github.com/flutter/flutter/issues/40429#issuecomment-549746165
           Platform.isIOS ? Uri.encodeFull(file.path) : file.path,
           ),
-          videoPlayerOptions:this.videoPlayerOptions,
+          videoPlayerOptions: videoPlayerOptions,
         ),
         trimStyle = trimStyle ?? TrimSliderStyle(),
         assert(maxDuration > minDuration,
