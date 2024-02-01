@@ -14,12 +14,15 @@ class ThumbnailSlider extends StatefulWidget {
     super.key,
     required this.controller,
     this.height = 60,
+    this.displayTrimOnly = false,
   });
 
   /// The [height] param specifies the height of the generated thumbnails
   final double height;
 
   final VideoEditorController controller;
+
+   final bool displayTrimOnly;
 
   @override
   State<ThumbnailSlider> createState() => _ThumbnailSliderState();
@@ -78,6 +81,7 @@ class _ThumbnailSliderState extends State<ThumbnailSlider> {
   Stream<List<Uint8List>> _generateThumbnails() => generateTrimThumbnails(
         widget.controller,
         quantity: _thumbnailsCount,
+        displayTrimOnly: widget.displayTrimOnly,
       );
 
   /// Returns the max size the layout should take with the rect value
