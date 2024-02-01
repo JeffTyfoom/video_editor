@@ -6,11 +6,15 @@ import 'package:video_editor/src/models/cover_data.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 Stream<List<Uint8List>> generateTrimThumbnails(
-  VideoEditorController controller, {
-  required int quantity,
-}) async* {
+    VideoEditorController controller, {
+      required int quantity,
+      bool displayTrimOnly = false,
+    }) async* {
   final String path = controller.file.path;
-  final double eachPart = controller.videoDuration.inMilliseconds / quantity;
+  final int duration = controller.isTrimmed && displayTrimOnly
+      ? controller.trimmedDuration.inMilliseconds
+      : controller.videoDuration.inMilliseconds;
+  final double eachPart = duration / quantity;
   List<Uint8List> byteList = [];
 
   for (int i = 1; i <= quantity; i++) {
@@ -18,7 +22,10 @@ Stream<List<Uint8List>> generateTrimThumbnails(
       final Uint8List? bytes = await VideoThumbnail.thumbnailData(
         imageFormat: ImageFormat.JPEG,
         video: path,
-        timeMs: (eachPart * i).toInt(),
+        timeMs: (controller.isTrimmed && displayTrimOnly
+            ? (eachPart * i) + controller.startTrim.inMilliseconds
+            : (eachPart * i))
+            .toInt(),
         quality: controller.trimThumbnailsQuality,
       );
       if (bytes != null) {
